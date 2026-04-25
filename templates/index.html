@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF Translator Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+
+    <main class="page-shell">
+        <section class="hero">
+            <span class="badge">DIPLOMA SHOWCASE READY</span>
+            <h1>PDF Translator Pro</h1>
+            <p>
+                Full-stack web application for multilingual PDF translation with animated UI, live progress,
+                and native-script PDF rendering for Hindi, Marathi, Tamil, Telugu, Kannada, Malayalam and more.
+            </p>
+        </section>
+
+        <section class="grid two-col">
+            <article class="panel">
+                <h2>Translate Document</h2>
+                <form id="translateForm" class="form-stack" novalidate>
+                    <label class="field">
+                        <span>Upload PDF</span>
+                        <input type="file" id="pdfInput" accept="application/pdf" required>
+                    </label>
+
+                    <div class="field-row">
+                        <label class="field">
+                            <span>Target language</span>
+                            <select id="targetLang"></select>
+                        </label>
+                        <label class="field">
+                            <span>Chunk size</span>
+                            <input type="range" id="chunkSize" min="1200" max="4200" step="100" value="{{ default_chunk_size }}">
+                            <small id="chunkValue">{{ default_chunk_size }}</small>
+                        </label>
+                    </div>
+
+                    <label class="switch-row">
+                        <input type="checkbox" id="fallbackEngine" checked>
+                        <span>Use backup translation engine</span>
+                    </label>
+
+                    <button type="submit" id="startBtn" class="btn btn-primary">Start Translation</button>
+                </form>
+
+                <div class="metric-grid" id="fileMetrics">
+                    <div class="metric-card">
+                        <span class="metric-label">File</span>
+                        <span class="metric-value" id="metricFile">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Size</span>
+                        <span class="metric-value" id="metricSize">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Status</span>
+                        <span class="metric-value" id="metricStatus">Idle</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="panel">
+                <h2>Live Job Status</h2>
+                <div class="status-pill status-idle" id="statusPill">Idle</div>
+                <div class="progress-wrap" aria-label="translation progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p class="status-message" id="statusMessage">Upload a PDF and start translation.</p>
+
+                <div class="stats-grid">
+                    <div class="stat"><span>Total pages</span><strong id="statTotalPages">0</strong></div>
+                    <div class="stat"><span>Text pages</span><strong id="statTextPages">0</strong></div>
+                    <div class="stat"><span>Total chunks</span><strong id="statTotalChunks">0</strong></div>
+                    <div class="stat"><span>Google chunks</span><strong id="statGoogle">0</strong></div>
+                    <div class="stat"><span>Backup chunks</span><strong id="statDeep">0</strong></div>
+                    <div class="stat"><span>Fallback chunks</span><strong id="statFallback">0</strong></div>
+                    <div class="stat"><span>PDF font</span><strong id="statFont">-</strong></div>
+                    <div class="stat"><span>Language</span><strong id="statLanguage">-</strong></div>
+                </div>
+
+                <a href="#" id="downloadBtn" class="btn btn-secondary disabled" download>Download translated PDF</a>
+            </article>
+        </section>
+
+        <section class="grid two-col secondary">
+            <article class="panel">
+                <h2>Quick Sample Translation</h2>
+                <form id="sampleForm" class="form-stack" novalidate>
+                    <label class="field">
+                        <span>Sample text</span>
+                        <textarea id="sampleInput" rows="5">This web app translates complete PDF documents into your selected language.</textarea>
+                    </label>
+                    <button type="submit" class="btn btn-primary">Translate Sample</button>
+                </form>
+                <label class="field">
+                    <span>Sample output</span>
+                    <textarea id="sampleOutput" rows="5" readonly></textarea>
+                </label>
+                <p class="mini" id="sampleEngine">Engine: -</p>
+            </article>
+
+            <article class="panel">
+                <h2>Preview of Last Result</h2>
+                <label class="field">
+                    <span>Translated text preview</span>
+                    <textarea id="resultPreview" rows="14" readonly>No result yet.</textarea>
+                </label>
+            </article>
+        </section>
+
+        <section class="panel language-panel">
+            <div class="language-head">
+                <h2>Language Font Matrix</h2>
+                <input type="search" id="languageSearch" placeholder="Search language or code...">
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Language</th>
+                            <th>Code</th>
+                            <th>PDF Font</th>
+                        </tr>
+                    </thead>
+                    <tbody id="languageTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        window.APP_DATA = {
+            languages: {{ languages | tojson }},
+            fontMap: {{ font_map | tojson }},
+            defaultLang: {{ default_lang | tojson }}
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
